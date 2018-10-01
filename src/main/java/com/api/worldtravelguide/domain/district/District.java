@@ -15,15 +15,19 @@ import javax.persistence.*;
 @ToString
 @Table(name = "district")
 public class District extends BaseEntity {
+    @Column(name = "name")
     private String name;
 
     @Column(name = "original_name")
     private String originalName;
 
+    @Column(name = "code")
     private String code;
 
+    @Column(name = "latitude")
     private String latitude;
 
+    @Column(name = "longitude")
     private String longitude;
 
     @ManyToOne

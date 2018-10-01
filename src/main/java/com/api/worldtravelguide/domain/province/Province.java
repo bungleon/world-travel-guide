@@ -14,7 +14,10 @@ import javax.persistence.*;
 @ToString
 @Table(name = "province")
 public class Province extends BaseEntity {
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "code")
     private String code;
 
     @Column(name = "phone_code")
@@ -23,8 +26,10 @@ public class Province extends BaseEntity {
     @Column(name = "original_name")
     private String originalName;
 
+    @Column(name = "latitude")
     private String latitude;
 
+    @Column(name = "longitude")
     private String longitude;
 
     @ManyToOne

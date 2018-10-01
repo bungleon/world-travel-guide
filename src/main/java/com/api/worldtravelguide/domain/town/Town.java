@@ -20,10 +20,13 @@ public class Town extends BaseEntity {
     @Column(name = "original_name")
     private String originalName;
 
+    @Column(name = "code")
     private String code;
 
+    @Column(name = "latitude")
     private String latitude;
 
+    @Column(name = "longitude")
     private String longitude;
 
     @ManyToOne

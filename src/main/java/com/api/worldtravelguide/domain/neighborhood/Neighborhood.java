@@ -14,8 +14,10 @@ import javax.persistence.*;
 @ToString
 @Table(name = "neighborhood")
 public class Neighborhood extends BaseEntity {
+    @Column(name = "neighborhood")
     private String neighborhood;
 
+    @Column(name = "code")
     private String code;
 
     @Column(name = "zip_code")
@@ -24,8 +26,10 @@ public class Neighborhood extends BaseEntity {
     @Column(name = "original_name")
     private String originalName;
 
+    @Column(name = "latitude")
     private String latitude;
 
+    @Column(name = "longitude")
     private String longitude;
 
     @ManyToOne
