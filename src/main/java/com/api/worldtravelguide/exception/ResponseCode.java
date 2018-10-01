@@ -5,7 +5,14 @@ import lombok.Getter;
 @Getter
 public enum ResponseCode {
     SUCCESS(100, "Success"),
-    USER_NOT_CREATED(301, "User not created"),
+
+    COUNTRY_NOT_FOUND(301, "Country not found"),
+    PROVINCE_NOT_FOUND(302, "Province not found"),
+    TOWN_NOT_FOUND(303, "Town not found"),
+    DISTRICT_NOT_FOUND(304, "District not found"),
+    NEIGHBORHOOD_NOT_FOUND(305, "Neighborhood not found"),
+
+    /*USER_NOT_CREATED(301, "User not created"),
     USER_NOT_UPDATED(302, "User not updated"),
     USER_NOT_FOUND(303, "User not found"),
     MERCHANT_NOT_CREATED(304, "Merchant not created"),
@@ -18,7 +25,7 @@ public enum ResponseCode {
     APPOINTMENT_TAKEN_BEFORE(311, "Appointment taken before"),
     FEED_BACK_CANNOT_CREATED(312, "Feed back cannot created"),
     FEED_BACK_NOT_FOUND(313, "Feed back not found"),
-    COUNTRY_NOT_FOUND(314,"Country not found"),
+    COUNTRY_NOT_FOUND(314,"Country not found"),*/
 
     INVALID_IP(991, "Invalid ip"),
     ACCESS_DENIED(992, "Access denied"),
