@@ -12,6 +12,7 @@ public class ProvinceUpdateRequest {
     private String name;
     private String originalName;
     private String code;
+    private String phoneCode;
     private String latitude;
     private String longitude;
 }

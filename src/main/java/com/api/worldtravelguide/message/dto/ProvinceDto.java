@@ -13,6 +13,7 @@ public class ProvinceDto {
     private UUID id;
     private String name;
     private String originalName;
+    private String phoneCode;
     private String code;
     private String latitude;
     private String longitude;
@@ -21,6 +22,7 @@ public class ProvinceDto {
         this.id = province.getId();
         this.name = province.getName();
         this.originalName = province.getOriginalName();
+        this.phoneCode = province.getPhoneCode();
         this.code = province.getCode();
         this.latitude = province.getLatitude();
         this.longitude = province.getLongitude();
