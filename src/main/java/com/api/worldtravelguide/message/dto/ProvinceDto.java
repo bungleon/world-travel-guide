@@ -16,6 +16,7 @@ public class ProvinceDto {
     private String code;
     private String latitude;
     private String longitude;
+
     public ProvinceDto(Province province) {
         this.id = province.getId();
         this.name = province.getName();
