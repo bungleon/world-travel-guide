@@ -8,5 +8,5 @@ import java.util.UUID;
 @Getter
 @Setter
 public class DistrictListRequest {
-    private UUID countryId;
+    private UUID townId;
 }
