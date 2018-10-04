@@ -15,4 +15,5 @@ public class ProvinceUpdateRequest {
     private String phoneCode;
     private String latitude;
     private String longitude;
+    private UUID countryId;
 }

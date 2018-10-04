@@ -6,6 +6,7 @@ import com.api.worldtravelguide.exception.domain_exception.ProvinceNotFoundExcep
 import com.api.worldtravelguide.handler.Handler;
 import com.api.worldtravelguide.message.request.province.ProvinceUpdateRequest;
 import com.api.worldtravelguide.message.response.province.ProvinceUpdateResponse;
+import com.api.worldtravelguide.service.country.CountryService;
 import com.api.worldtravelguide.service.province.ProvinceService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -13,9 +14,11 @@ import org.springframework.util.StringUtils;
 @Component
 public class ProvinceUpdateHandler implements Handler<ProvinceUpdateRequest, ProvinceUpdateResponse> {
     private final ProvinceService provinceService;
+    private final CountryService countryService;
 
-    public ProvinceUpdateHandler(ProvinceService provinceService) {
+    public ProvinceUpdateHandler(ProvinceService provinceService, CountryService countryService) {
         this.provinceService = provinceService;
+        this.countryService = countryService;
     }
 
     @Override
@@ -49,6 +52,13 @@ public class ProvinceUpdateHandler implements Handler<ProvinceUpdateRequest, Pro
         if (!StringUtils.isEmpty(request.getPhoneCode())) {
             province.setPhoneCode(request.getPhoneCode());
         }
+
+        if (request.getCountryId() != null) {
+            province.setCountry(countryService.getById(request.getCountryId()));
+        }
+
+        provinceService.save(province);
+
         return ProvinceUpdateResponse.builder()
                 .responseCode(ResponseCode.SUCCESS)
                 .build();
