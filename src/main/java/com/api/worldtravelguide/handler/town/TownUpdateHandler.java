@@ -6,6 +6,7 @@ import com.api.worldtravelguide.exception.domain_exception.TownNotFoundException
 import com.api.worldtravelguide.handler.Handler;
 import com.api.worldtravelguide.message.request.town.TownUpdateRequest;
 import com.api.worldtravelguide.message.response.town.TownUpdateResponse;
+import com.api.worldtravelguide.service.province.ProvinceService;
 import com.api.worldtravelguide.service.town.TownService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -13,9 +14,11 @@ import org.springframework.util.StringUtils;
 @Component
 public class TownUpdateHandler implements Handler<TownUpdateRequest, TownUpdateResponse> {
     private final TownService townService;
+    private final ProvinceService provinceService;
 
-    public TownUpdateHandler(TownService townService) {
+    public TownUpdateHandler(TownService townService, ProvinceService provinceService) {
         this.townService = townService;
+        this.provinceService = provinceService;
     }
 
     @Override
@@ -45,6 +48,10 @@ public class TownUpdateHandler implements Handler<TownUpdateRequest, TownUpdateR
 
         if (!StringUtils.isEmpty(request.getOriginalName())) {
             town.setOriginalName(request.getOriginalName());
+        }
+
+        if (request.getProvinceId() != null && town.getId() != null) {
+            town.setProvince(provinceService.getById(request.getProvinceId()));
         }
 
         townService.save(town);

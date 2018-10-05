@@ -14,4 +14,5 @@ public class TownUpdateRequest {
     private String code;
     private String latitude;
     private String longitude;
+    private UUID provinceId;
 }
