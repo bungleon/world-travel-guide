@@ -53,7 +53,7 @@ public class ProvinceUpdateHandler implements Handler<ProvinceUpdateRequest, Pro
             province.setPhoneCode(request.getPhoneCode());
         }
 
-        if (request.getCountryId() != null && province.getId() != null) {
+        if (request.getCountryId() != null) {
             province.setCountry(countryService.getById(request.getCountryId()));
         }
 

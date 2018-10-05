@@ -50,7 +50,7 @@ public class TownUpdateHandler implements Handler<TownUpdateRequest, TownUpdateR
             town.setOriginalName(request.getOriginalName());
         }
 
-        if (request.getProvinceId() != null && town.getId() != null) {
+        if (request.getProvinceId() != null) {
             town.setProvince(provinceService.getById(request.getProvinceId()));
         }
 

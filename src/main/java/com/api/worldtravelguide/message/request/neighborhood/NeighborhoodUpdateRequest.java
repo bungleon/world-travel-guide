@@ -14,4 +14,5 @@ public class NeighborhoodUpdateRequest {
     private String code;
     private String latitude;
     private String longitude;
+    private UUID districtId;
 }

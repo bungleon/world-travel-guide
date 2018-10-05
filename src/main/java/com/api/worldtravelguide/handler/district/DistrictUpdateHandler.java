@@ -7,15 +7,18 @@ import com.api.worldtravelguide.handler.Handler;
 import com.api.worldtravelguide.message.request.district.DistrictUpdateRequest;
 import com.api.worldtravelguide.message.response.district.DistrictUpdateResponse;
 import com.api.worldtravelguide.service.district.DistrictService;
+import com.api.worldtravelguide.service.town.TownService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
 public class DistrictUpdateHandler implements Handler<DistrictUpdateRequest, DistrictUpdateResponse> {
     private final DistrictService districtService;
+    private final TownService townService;
 
-    public DistrictUpdateHandler(DistrictService districtService) {
+    public DistrictUpdateHandler(DistrictService districtService, TownService townService) {
         this.districtService = districtService;
+        this.townService = townService;
     }
 
     @Override
@@ -45,6 +48,10 @@ public class DistrictUpdateHandler implements Handler<DistrictUpdateRequest, Dis
 
         if (!StringUtils.isEmpty(request.getOriginalName())) {
             district.setOriginalName(request.getOriginalName());
+        }
+
+        if (request.getTownId() != null) {
+            district.setTown(townService.getById(request.getTownId()));
         }
 
         districtService.save(district);

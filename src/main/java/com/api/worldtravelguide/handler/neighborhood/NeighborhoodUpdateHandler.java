@@ -6,6 +6,7 @@ import com.api.worldtravelguide.exception.domain_exception.NeighborhoodNotFoundE
 import com.api.worldtravelguide.handler.Handler;
 import com.api.worldtravelguide.message.request.neighborhood.NeighborhoodUpdateRequest;
 import com.api.worldtravelguide.message.response.neighborhood.NeighborhoodUpdateResponse;
+import com.api.worldtravelguide.service.district.DistrictService;
 import com.api.worldtravelguide.service.neighborhood.NeighborhoodService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -13,9 +14,11 @@ import org.springframework.util.StringUtils;
 @Component
 public class NeighborhoodUpdateHandler implements Handler<NeighborhoodUpdateRequest, NeighborhoodUpdateResponse> {
     private final NeighborhoodService neighborhoodService;
+    private final DistrictService districtService;
 
-    public NeighborhoodUpdateHandler(NeighborhoodService neighborhoodService) {
+    public NeighborhoodUpdateHandler(NeighborhoodService neighborhoodService, DistrictService districtService) {
         this.neighborhoodService = neighborhoodService;
+        this.districtService = districtService;
     }
 
     @Override
@@ -46,6 +49,10 @@ public class NeighborhoodUpdateHandler implements Handler<NeighborhoodUpdateRequ
 
         if (!StringUtils.isEmpty(request.getOriginalName())) {
             neighborhood.setOriginalName(request.getOriginalName());
+        }
+
+        if (request.getDistrictId() != null) {
+            neighborhood.setDistrict(districtService.getById(request.getDistrictId()));
         }
 
         neighborhoodService.save(neighborhood);
