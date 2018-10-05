@@ -22,7 +22,7 @@ import javax.validation.ValidatorFactory;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    public static final String MATCH_ALL = "/**";
+    public static final String MATCH_ALL = "/api/**";
     public static final String AUTH_URL = "/auth/login";
 
     private final Gson gson;
@@ -48,6 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.authorizeRequests().antMatchers("/seed/**")
+                .permitAll();
         http
                 .authorizeRequests()
                 .anyRequest().fullyAuthenticated()
@@ -58,10 +60,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(systemAuthenticationEntryPoint);
 
         http.cors();
+
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(loginAuthenticationProvider);
         auth.authenticationProvider(jwtAuthenticationProvider);
     }
