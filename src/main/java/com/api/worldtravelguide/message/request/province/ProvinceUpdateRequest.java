@@ -3,6 +3,7 @@ package com.api.worldtravelguide.message.request.province;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Getter
@@ -15,5 +16,6 @@ public class ProvinceUpdateRequest {
     private String phoneCode;
     private String latitude;
     private String longitude;
+    @NotNull
     private UUID countryId;
 }

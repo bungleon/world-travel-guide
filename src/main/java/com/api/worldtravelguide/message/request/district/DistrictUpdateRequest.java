@@ -3,6 +3,7 @@ package com.api.worldtravelguide.message.request.district;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Getter
@@ -14,5 +15,6 @@ public class DistrictUpdateRequest {
     private String code;
     private String latitude;
     private String longitude;
+    @NotNull
     private UUID townId;
 }
