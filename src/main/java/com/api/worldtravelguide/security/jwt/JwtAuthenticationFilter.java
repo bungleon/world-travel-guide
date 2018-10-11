@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter extends AbstractSystemAuthenticationFilter 
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             String jwtToken = jwtService.jwtExtractor(request);
             JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken(jwtToken);
@@ -33,6 +33,7 @@ public class JwtAuthenticationFilter extends AbstractSystemAuthenticationFilter 
         } catch (org.springframework.security.core.AuthenticationException authException) {
             throw authException;
         } catch (Exception exception) {
+            //
         }
 
         throw new SystemAuthenticationException("System Error", ResponseCode.UNDEFINED_ERROR);
