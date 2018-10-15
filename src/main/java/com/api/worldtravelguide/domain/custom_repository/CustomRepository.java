@@ -1,10 +1,11 @@
 package com.api.worldtravelguide.domain.custom_repository;
 
-import org.springframework.data.repository.NoRepositoryBean;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.QueryByExampleExecutor;
 
-@NoRepositoryBean
-public interface CustomRepository<T, ID> extends PagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T> {
+import com.api.worldtravelguide.message.custom.request.SearchRequest;
+import org.springframework.data.domain.Page;
 
+
+public interface CustomRepository {
+
+    <R, S> Page<R> search(Class<R> returnClassType, Class<S> entityType, SearchRequest objects);
 }

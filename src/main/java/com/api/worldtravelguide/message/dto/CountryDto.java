@@ -1,6 +1,7 @@
 package com.api.worldtravelguide.message.dto;
 
 import com.api.worldtravelguide.domain.country.Country;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CountryDto {
     private UUID id;
     private String name;

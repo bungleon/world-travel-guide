@@ -1,105 +1,49 @@
 package com.api.worldtravelguide.domain.custom_repository;
 
-import org.springframework.data.domain.Example;
+import com.api.worldtravelguide.message.custom.request.SearchRequest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
-public class CustomRepositoryImpl<T, ID> implements CustomRepository<T, ID> {
-    @Override
-    public Iterable<T> findAll(Sort sort) {
-        return null;
+@Repository
+@Transactional(readOnly = true)
+public class CustomRepositoryImpl implements CustomRepository {
+    private final EntityManager entityManager;
+
+    public CustomRepositoryImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
-    @Override
-    public Page<T> findAll(Pageable pageable) {
-        return null;
-    }
+    public <R, S> Page<R> search(Class<R> returnClassType, Class<S> entityType, SearchRequest searchRequest) {
+        //Integer pageNumber = transactionSearchRequest.getPage() == null || transactionSearchRequest.getPage() <= 1 ? 0 : transactionSearchRequest.getPage() - 1;
 
-    @Override
-    public <S extends T> S save(S entity) {
-        return null;
-    }
+        Specification<S> specification = CustomSpecs.search(entityType, searchRequest);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<R> query = cb.createQuery(returnClassType);
+        Root<S> root = query.from(entityType);
 
-    @Override
-    public <S extends T> Iterable<S> saveAll(Iterable<S> entities) {
-        return null;
-    }
+        query.where(cb.and(specification.toPredicate(root, query, cb)));
 
-    @Override
-    public Optional<T> findById(ID id) {
-        return Optional.empty();
-    }
+        query.multiselect(root);
 
-    @Override
-    public boolean existsById(ID id) {
-        return false;
-    }
+        Integer firstResult = 0;
 
-    @Override
-    public Iterable<T> findAll() {
-        return null;
-    }
+        List<R> list = entityManager.createQuery(query)
+                .setFirstResult(firstResult)
+                .setMaxResults(25)
+                .getResultList();
 
-    @Override
-    public Iterable<T> findAllById(Iterable<ID> ids) {
-        return null;
-    }
 
-    @Override
-    public long count() {
-        return 0;
-    }
-
-    @Override
-    public void deleteById(ID id) {
-
-    }
-
-    @Override
-    public void delete(T entity) {
-
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends T> entities) {
-
-    }
-
-    @Override
-    public void deleteAll() {
-
-    }
-
-    @Override
-    public <S extends T> Optional<S> findOne(Example<S> example) {
-        return Optional.empty();
-    }
-
-    @Override
-    public <S extends T> Iterable<S> findAll(Example<S> example) {
-        return null;
-    }
-
-    @Override
-    public <S extends T> Iterable<S> findAll(Example<S> example, Sort sort) {
-        return null;
-    }
-
-    @Override
-    public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public <S extends T> long count(Example<S> example) {
-        return 0;
-    }
-
-    @Override
-    public <S extends T> boolean exists(Example<S> example) {
-        return false;
+        return new PageImpl<>(list, new PageRequest(0, 25, Sort.Direction.DESC, "updateDate"), 100);
     }
 }
