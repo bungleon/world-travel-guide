@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class WorldtravelguideApplicationTests {
@@ -43,16 +45,31 @@ public class WorldtravelguideApplicationTests {
 
     @Test
     public void objectTest() {
-        TownSearch townSearch = new TownSearch();
-        townSearch.setName("Bandırma");
-        ProvinceSearch provinceSearch = new ProvinceSearch();
-        provinceSearch.setCountry(townSearch);
         CountrySearch countrySearch = new CountrySearch();
-        countrySearch.setProvince(provinceSearch);
+        //countrySearch.setName("Turkey");
+        //countrySearch.setBinaryCode("TR");
+        ProvinceSearch provinceSearch = new ProvinceSearch();
+        //provinceSearch.setName("Bursa");
+        provinceSearch.setPhoneCode("null");
+        provinceSearch.setCountry(countrySearch);
+        TownSearch townSearch = new TownSearch();
+        townSearch.setProvince(provinceSearch);
+
         SearchRequest request = new SearchRequest();
-        request.setEquals(countrySearch);
+        request.setPageNumber(1);
+        request.setEqualsNull(townSearch);
         Page<TownDto> towns = countryRepository.search(TownDto.class, Town.class, request);
-        System.out.println(towns);
+        List<TownDto> townDtoList = towns.getContent();
+        System.out.println(townDtoList.toString());
+    }
+
+    @Test
+    public void testtttt() {
+        String s = "osman ben";
+        String s1 = "sen kim";
+        s.concat(s1);
+        System.out.println(s);
+        System.out.println(s1);
     }
 
 }

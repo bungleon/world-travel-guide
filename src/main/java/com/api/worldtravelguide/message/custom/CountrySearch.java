@@ -9,5 +9,5 @@ import lombok.ToString;
 @ToString
 public class CountrySearch {
     String name;
-    ProvinceSearch province;
+    String binaryCode;
 }

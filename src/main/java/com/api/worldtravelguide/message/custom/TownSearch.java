@@ -9,4 +9,5 @@ import lombok.ToString;
 @ToString
 public class TownSearch {
     String name;
+    ProvinceSearch province;
 }

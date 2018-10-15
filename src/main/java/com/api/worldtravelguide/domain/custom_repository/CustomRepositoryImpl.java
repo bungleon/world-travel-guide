@@ -18,6 +18,7 @@ import java.util.List;
 @Repository
 @Transactional(readOnly = true)
 public class CustomRepositoryImpl implements CustomRepository {
+    private final Integer PAGE_SIZE = 25;
     private final EntityManager entityManager;
 
     public CustomRepositoryImpl(EntityManager entityManager) {
@@ -25,7 +26,7 @@ public class CustomRepositoryImpl implements CustomRepository {
     }
 
     public <R, S> Page<R> search(Class<R> returnClassType, Class<S> entityType, SearchRequest searchRequest) {
-        //Integer pageNumber = transactionSearchRequest.getPage() == null || transactionSearchRequest.getPage() <= 1 ? 0 : transactionSearchRequest.getPage() - 1;
+        Integer pageNumber = searchRequest.getPageNumber() == null || searchRequest.getPageNumber() <= 1 ? 0 : searchRequest.getPageNumber() - 1;
 
         Specification<S> specification = CustomSpecs.search(entityType, searchRequest);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -36,14 +37,14 @@ public class CustomRepositoryImpl implements CustomRepository {
 
         query.multiselect(root);
 
-        Integer firstResult = 0;
+        Integer firstResult = PAGE_SIZE * pageNumber;
 
         List<R> list = entityManager.createQuery(query)
                 .setFirstResult(firstResult)
-                .setMaxResults(25)
+                .setMaxResults(PAGE_SIZE)
                 .getResultList();
 
 
-        return new PageImpl<>(list, new PageRequest(0, 25, Sort.Direction.DESC, "updateDate"), 100);
+        return new PageImpl<>(list, new PageRequest(pageNumber, PAGE_SIZE, Sort.Direction.DESC, "updateDate"), 100);
     }
 }

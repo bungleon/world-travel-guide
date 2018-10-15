@@ -12,7 +12,6 @@ import org.springframework.data.jpa.domain.Specification;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,42 +25,32 @@ public class CustomSpecs {
     static <R> Specification<R> search(Class<R> type, SearchRequest searchRequest) {
         return (root, query, cb) -> {
 
-            JSONObject equals = null;
-            JSONObject equalsNull = null;
+            List<Predicate> predicates = new ArrayList();
 
             try {
                 if (searchRequest.getEquals() != null) {
-                    equals = new JSONObject(mapper.writeValueAsString(searchRequest.getEquals()));
+                    JSONObject equals = new JSONObject(mapper.writeValueAsString(searchRequest.getEquals()));
+                    setPredicateEqualsAnd(predicates, cb, equals, root);
                 }
                 if (searchRequest.getEqualsNull() != null) {
-                    equalsNull = new JSONObject(mapper.writeValueAsString(searchRequest.getEqualsNull()));
+                    JSONObject equalsNull = new JSONObject(mapper.writeValueAsString(searchRequest.getEqualsNull()));
+                    setPredicateEqualsAndNull(predicates, cb, equalsNull, root);
                 }
             } catch (JSONException | JsonProcessingException e) {
                 e.printStackTrace();
-                throw new DomainException("Cannot parse JSONObject");
+                throw new DomainException(e.getMessage());
             }
-
-
-            List<Predicate> predicates = new ArrayList();
-            if (equals != null) {
-                setPredicate(predicates, root, cb, equals, root);
-            }
-            if (equalsNull != null) {
-                setPredicateNull(predicates, root, cb, equalsNull, root);
-            }
-
-
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
     }
 
-    private static void setPredicate(List<Predicate> predicates, Root root, CriteriaBuilder cb, JSONObject searchRequest, Path path) {
+    private static void setPredicateEqualsAnd(List<Predicate> predicates, CriteriaBuilder cb, JSONObject searchRequest, Path path) {
         for (int i = 0; i < searchRequest.length(); i++) {
             try {
                 System.out.println(searchRequest);
                 String pathVariable = (String) searchRequest.names().get(i);
                 String value = (String) searchRequest.get((String) searchRequest.names().get(i));
-                predicates.add(cb.and(cb.equal(root.get(pathVariable), value)));
+                predicates.add(cb.and(cb.equal(path.get(pathVariable), value)));
             } catch (Exception e) {
                 String pathVariable;
                 try {
@@ -70,7 +59,7 @@ public class CustomSpecs {
                     throw new DomainException("Cannot parse Query");
                 }
                 try {
-                    setPredicate(predicates, root, cb, (JSONObject) searchRequest.get((String) searchRequest.names().get(i)), getPath(path, pathVariable));
+                    setPredicateEqualsAnd(predicates, cb, (JSONObject) searchRequest.get((String) searchRequest.names().get(i)), getPath(path, pathVariable));
                 } catch (JSONException e1) {
                     e1.printStackTrace();
                 }
@@ -78,13 +67,13 @@ public class CustomSpecs {
         }
     }
 
-    private static void setPredicateNull(List<Predicate> predicates, Root root, CriteriaBuilder cb, JSONObject searchRequest, Path path) {
+    private static void setPredicateEqualsAndNull(List<Predicate> predicates, CriteriaBuilder cb, JSONObject searchRequest, Path path) {
         for (int i = 0; i < searchRequest.length(); i++) {
             try {
                 System.out.println(searchRequest);
                 String pathVariable = (String) searchRequest.names().get(i);
                 String value = (String) searchRequest.get((String) searchRequest.names().get(i));
-                predicates.add(cb.and(cb.equal(root.get(pathVariable), null)));
+                predicates.add(cb.and(cb.isNull(path.get(pathVariable))));
             } catch (Exception e) {
                 String pathVariable;
                 try {
@@ -93,7 +82,7 @@ public class CustomSpecs {
                     throw new DomainException("Cannot parse Query");
                 }
                 try {
-                    setPredicate(predicates, root, cb, (JSONObject) searchRequest.get((String) searchRequest.names().get(i)), getPath(path, pathVariable));
+                    setPredicateEqualsAndNull(predicates, cb, (JSONObject) searchRequest.get((String) searchRequest.names().get(i)), getPath(path, pathVariable));
                 } catch (JSONException e1) {
                     e1.printStackTrace();
                 }
