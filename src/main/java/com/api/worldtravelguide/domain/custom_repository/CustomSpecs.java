@@ -26,12 +26,16 @@ public class CustomSpecs {
     static <R> Specification<R> search(Class<R> type, SearchRequest searchRequest) {
         return (root, query, cb) -> {
 
-            JSONObject equals;
-            JSONObject equalsNull;
+            JSONObject equals = null;
+            JSONObject equalsNull = null;
 
             try {
-                equals = new JSONObject(mapper.writeValueAsString(searchRequest.getEquals()));
-                equalsNull = new JSONObject(mapper.writeValueAsString(searchRequest.getEqualsNull()));
+                if (searchRequest.getEquals() != null) {
+                    equals = new JSONObject(mapper.writeValueAsString(searchRequest.getEquals()));
+                }
+                if (searchRequest.getEqualsNull() != null) {
+                    equalsNull = new JSONObject(mapper.writeValueAsString(searchRequest.getEqualsNull()));
+                }
             } catch (JSONException | JsonProcessingException e) {
                 e.printStackTrace();
                 throw new DomainException("Cannot parse JSONObject");
@@ -39,8 +43,12 @@ public class CustomSpecs {
 
 
             List<Predicate> predicates = new ArrayList();
-            setPredicate(predicates, root, cb, equals, root);
-            setPredicateNull(predicates, root, cb, equalsNull, root);
+            if (equals != null) {
+                setPredicate(predicates, root, cb, equals, root);
+            }
+            if (equalsNull != null) {
+                setPredicateNull(predicates, root, cb, equalsNull, root);
+            }
 
 
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
